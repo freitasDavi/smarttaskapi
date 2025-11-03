@@ -19,8 +19,15 @@ public class UserService {
 
 
     public UUID createUser(NewUserRequestDTO request) {
-        repository.findByEmail(request.email()).orElseThrow(
-                () -> new RuntimeException("User with email " + request.email() + " already exists"));
+       // repository.findByEmail(request.email()).orElseThrow(
+         //       () -> new RuntimeException("User with email " + request.email() + " already exists"));
+
+        var userExists = repository.findByEmail(request.email());
+
+        if (userExists.isPresent())
+        {
+            throw new RuntimeException("User already exists");
+        }
 
         var hashedPassword = BCrypt.hashpw(request.password(), BCrypt.gensalt());
 
@@ -30,7 +37,9 @@ public class UserService {
                 .passwordHash(hashedPassword)
                 .build();
 
-        repository.save(newUser);
+        System.out.println(newUser);
+
+        //repository.save(newUser);
 
         return newUser.getId();
     }
