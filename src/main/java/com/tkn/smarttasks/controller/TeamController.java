@@ -1,5 +1,6 @@
 package com.tkn.smarttasks.controller;
 
+import com.tkn.smarttasks.dto.teams.AddUsersToTheTeamRequest;
 import com.tkn.smarttasks.dto.teams.CreateTeamRequest;
 import com.tkn.smarttasks.dto.teams.GetUserTeamsResponse;
 import com.tkn.smarttasks.service.TeamService;
@@ -36,4 +37,14 @@ public class TeamController {
         return ResponseEntity.ok().body(teamService.findAllTeamsByOwnerId(userEmail));
     }
 
+    @PostMapping("/members")
+    public ResponseEntity addNewMembers (@RequestBody AddUsersToTheTeamRequest request) {
+        try {
+            teamService.addUsersToTheTeam(request);
+
+            return ResponseEntity.noContent().build();
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
 }
