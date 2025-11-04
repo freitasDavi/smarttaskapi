@@ -74,6 +74,9 @@ public class UserService {
         } catch (AuthenticationException e) {
             throw new RuntimeException("Invalid username or password");
         }
+    }
 
+    public User getUserDataByEmail(String email) {
+        return repository.findByEmail(email).orElseThrow(() -> new RuntimeException("Invalid token"));
     }
 }

@@ -17,16 +17,15 @@ import java.util.List;
 public class TeamService {
 
     private final TeamRepository teamRepository;
-    private final UserRepository userRepository;
+    private final UserService userService;
 
-    public TeamService(TeamRepository teamRepository, UserRepository userRepository) {
+    public TeamService(TeamRepository teamRepository, UserService userService) {
         this.teamRepository = teamRepository;
-        this.userRepository = userRepository;
+        this.userService = userService;
     }
 
     public void createTeam (CreateTeamRequest request, String userEmail) {
-        var owner = userRepository.findByEmail(userEmail)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+        var owner = userService.getUserDataByEmail(userEmail);
 
         Team team = Team.builder()
                 .owner(owner)
@@ -46,9 +45,7 @@ public class TeamService {
     }
 
     public List<GetUserTeamsResponse> findAllTeamsByOwnerId(String userEmail) {
-        var owner = userRepository.findByEmail(userEmail)
-                .orElseThrow(() -> new RuntimeException("User not found"));
-
+        var owner = userService.getUserDataByEmail(userEmail);
 
         return teamRepository.findAllByOwnerId(owner.getId())
                 .stream()
