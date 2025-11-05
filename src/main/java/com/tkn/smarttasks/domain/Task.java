@@ -1,5 +1,6 @@
 package com.tkn.smarttasks.domain;
 
+import com.tkn.smarttasks.domain.enums.TaskStatus;
 import com.vladmihalcea.hibernate.type.json.JsonType;
 import jakarta.persistence.*;
 import lombok.*;
@@ -7,7 +8,6 @@ import org.hibernate.annotations.Type;
 
 import java.time.Instant;
 import java.time.LocalDate;
-import java.util.Date;
 import java.util.Map;
 import java.util.UUID;
 
@@ -30,8 +30,9 @@ public class Task {
     @Column(name = "description")
     private String description;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "status", nullable = false)
-    private String status;
+    private TaskStatus status;
 
     @Column(name = "priority", nullable = false)
     private String priority;
@@ -60,6 +61,23 @@ public class Task {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "assignee_id")
     private User assignee;
+
+    public Task(Task taskToCopy) {
+        this.id = taskToCopy.getId();
+        this.title = taskToCopy.getTitle();
+        this.description = taskToCopy.getDescription();
+        this.status = taskToCopy.getStatus();
+        this.assignee = taskToCopy.getAssignee();
+        this.priority = taskToCopy.getPriority();
+        this.dueDate = taskToCopy.getDueDate();
+        this.metadata = taskToCopy.getMetadata();
+        this.createdAt = taskToCopy.getCreatedAt();
+        this.updatedAt = taskToCopy.getUpdatedAt();
+        this.team = taskToCopy.getTeam();
+        this.reporter = taskToCopy.getReporter();
+        this.assignee = taskToCopy.getAssignee();
+    }
+
 
     @PrePersist
     protected void onCreate() {
